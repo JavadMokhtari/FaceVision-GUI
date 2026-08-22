@@ -12,7 +12,7 @@ import '../widgets/section_card.dart';
 import '../widgets/shard_field.dart';
 import '../widgets/toggle_row.dart';
 
-const _modelOptions = ['arcface', 'facenet', 'mobilefacenet', 'sface'];
+const _modelOptions = ['facenet128', 'facenet512', 'sface'];
 
 class ExtractFeatureScreen extends StatefulWidget {
   const ExtractFeatureScreen({super.key});

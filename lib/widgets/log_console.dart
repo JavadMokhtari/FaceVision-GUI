@@ -79,13 +79,12 @@ class _Header extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text('Activity Log',
-                    style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14)),
+                    style:
+                        TextStyle(fontWeight: FontWeight.w700, fontSize: 14)),
                 AnimatedSwitcher(
                   duration: const Duration(milliseconds: 200),
                   child: Text(
-                    running
-                        ? 'Running: ${controller.currentTask}'
-                        : 'Idle',
+                    running ? 'Running: ${controller.currentTask}' : 'Idle',
                     key: ValueKey(running ? controller.currentTask : 'idle'),
                     style: TextStyle(
                         fontSize: 11.5, color: context.cTextSecondary),
@@ -121,7 +120,9 @@ class _EmptyState extends StatelessWidget {
               style: TextStyle(color: context.cTextSecondary, fontSize: 12.5)),
           const SizedBox(height: 2),
           Text('Run a task to see live logs here.',
-              style: TextStyle(color: context.cTextSecondary.withValues(alpha: 0.7), fontSize: 11.5)),
+              style: TextStyle(
+                  color: context.cTextSecondary.withValues(alpha: 0.7),
+                  fontSize: 11.5)),
         ],
       ),
     );

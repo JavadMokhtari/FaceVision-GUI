@@ -120,7 +120,7 @@ class _CrossMatchScreenState extends State<MatchFeatureScreen> {
         ),
         const SizedBox(height: 24),
         RunButton(
-          label: 'Match Feature',
+          label: 'Run Matcher',
           loading: run.isRunning,
           onPressed: () => _run(run),
         ),

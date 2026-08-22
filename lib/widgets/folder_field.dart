@@ -16,7 +16,7 @@ class FolderField extends StatelessWidget {
   final String hint;
 
   Future<void> _pick() async {
-    final path = await FilePicker.platform.getDirectoryPath();
+    final path = await FilePicker.getDirectoryPath();
     if (path != null) controller.text = path;
   }
 
