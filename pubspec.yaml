@@ -1,0 +1,36 @@
+name: facevision_gui
+description: A modern desktop control panel for the FaceVision dataset pipeline.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.6
+
+  # State management for the run/log controller.
+  provider: ^6.1.2
+
+  # Native folder/file picker (works on Windows/macOS/Linux desktop).
+  file_picker: ^11.0.3
+  flutter_rust_bridge: 2.12.0
+  rust_lib_facevision_gui:
+    path: rust_builder
+
+  # Your generated flutter_rust_bridge package.
+  # Point this at wherever crateApiRunDataset* lives in your project,
+  # e.g. a path dependency on the package that contains lib/src/rust/...
+  # flutter_rust_bridge: ^2.13.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+  integration_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
