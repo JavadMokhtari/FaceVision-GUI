@@ -291,9 +291,9 @@ class _Brand extends StatelessWidget {
                   Text(
                     AppInfo.name,
                     style: TextStyle(
-                      fontSize: 15,
+                      fontSize: 16,
                       fontWeight: FontWeight.w800,
-                      letterSpacing: 0.2,
+                      letterSpacing: 0.25,
                       color: context.cTextPrimary,
                     ),
                   ),
@@ -308,8 +308,9 @@ class _Brand extends StatelessWidget {
                     child: const Text(
                       'v${AppInfo.version}',
                       style: TextStyle(
-                        fontSize: 10,
+                        fontSize: 12,
                         fontWeight: FontWeight.w700,
+                        letterSpacing: 0.25,
                         color: AppTheme.accentB,
                       ),
                     ),
@@ -318,7 +319,11 @@ class _Brand extends StatelessWidget {
               ),
               Text(
                 AppInfo.subtitle,
-                style: TextStyle(fontSize: 10.5, color: context.cTextSecondary),
+                style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: 0.3,
+                    color: context.cTextSecondary),
               ),
             ],
           ),

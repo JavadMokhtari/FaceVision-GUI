@@ -3,7 +3,8 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
-import 'api/run_dataset.dart';
+import 'api/logging.dart';
+import 'api/ops.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'frb_generated.dart';
@@ -68,7 +69,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.12.0';
 
   @override
-  int get rustContentHash => 13969577;
+  int get rustContentHash => -886257040;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -80,7 +81,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 }
 
 abstract class RustLibApi extends BaseApi {
-  Future<void> crateApiRunDatasetDetectFace(
+  Future<void> crateApiOpsDetectFace(
       {required String srcDir,
       required String dstDir,
       required int imgSize,
@@ -91,7 +92,9 @@ abstract class RustLibApi extends BaseApi {
       required bool saveFaces,
       required bool verbose});
 
-  Future<void> crateApiRunDatasetExtractFeature(
+  Future<List<String>> crateApiLoggingDrainLogLines();
+
+  Future<void> crateApiOpsExtractFeature(
       {required String srcDir,
       required String dstDir,
       required String modelName,
@@ -100,7 +103,7 @@ abstract class RustLibApi extends BaseApi {
       (BigInt, BigInt)? shard,
       required bool verbose});
 
-  Future<void> crateApiRunDatasetMatchFeature(
+  Future<void> crateApiOpsMatchFeature(
       {required String refDir,
       required String probeDir,
       required String outputDir,
@@ -119,7 +122,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   });
 
   @override
-  Future<void> crateApiRunDatasetDetectFace(
+  Future<void> crateApiOpsDetectFace(
       {required String srcDir,
       required String dstDir,
       required int imgSize,
@@ -148,7 +151,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeSuccessData: sse_decode_unit,
         decodeErrorData: sse_decode_String,
       ),
-      constMeta: kCrateApiRunDatasetDetectFaceConstMeta,
+      constMeta: kCrateApiOpsDetectFaceConstMeta,
       argValues: [
         srcDir,
         dstDir,
@@ -164,8 +167,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     ));
   }
 
-  TaskConstMeta get kCrateApiRunDatasetDetectFaceConstMeta =>
-      const TaskConstMeta(
+  TaskConstMeta get kCrateApiOpsDetectFaceConstMeta => const TaskConstMeta(
         debugName: "detect_face",
         argNames: [
           "srcDir",
@@ -181,7 +183,31 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<void> crateApiRunDatasetExtractFeature(
+  Future<List<String>> crateApiLoggingDrainLogLines() {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 2, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_String,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiLoggingDrainLogLinesConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiLoggingDrainLogLinesConstMeta =>
+      const TaskConstMeta(
+        debugName: "drain_log_lines",
+        argNames: [],
+      );
+
+  @override
+  Future<void> crateApiOpsExtractFeature(
       {required String srcDir,
       required String dstDir,
       required String modelName,
@@ -200,13 +226,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_opt_box_autoadd_record_usize_usize(shard, serializer);
         sse_encode_bool(verbose, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 2, port: port_);
+            funcId: 3, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
         decodeErrorData: sse_decode_String,
       ),
-      constMeta: kCrateApiRunDatasetExtractFeatureConstMeta,
+      constMeta: kCrateApiOpsExtractFeatureConstMeta,
       argValues: [
         srcDir,
         dstDir,
@@ -220,8 +246,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     ));
   }
 
-  TaskConstMeta get kCrateApiRunDatasetExtractFeatureConstMeta =>
-      const TaskConstMeta(
+  TaskConstMeta get kCrateApiOpsExtractFeatureConstMeta => const TaskConstMeta(
         debugName: "extract_feature",
         argNames: [
           "srcDir",
@@ -235,7 +260,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<void> crateApiRunDatasetMatchFeature(
+  Future<void> crateApiOpsMatchFeature(
       {required String refDir,
       required String probeDir,
       required String outputDir,
@@ -254,13 +279,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_list_String(featureExts, serializer);
         sse_encode_bool(verbose, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 3, port: port_);
+            funcId: 4, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
         decodeErrorData: sse_decode_String,
       ),
-      constMeta: kCrateApiRunDatasetMatchFeatureConstMeta,
+      constMeta: kCrateApiOpsMatchFeatureConstMeta,
       argValues: [
         refDir,
         probeDir,
@@ -274,8 +299,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     ));
   }
 
-  TaskConstMeta get kCrateApiRunDatasetMatchFeatureConstMeta =>
-      const TaskConstMeta(
+  TaskConstMeta get kCrateApiOpsMatchFeatureConstMeta => const TaskConstMeta(
         debugName: "match_feature",
         argNames: [
           "refDir",

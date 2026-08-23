@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../src/rust/api/run_dataset.dart' as bridge;
+import '../src/rust/api/ops.dart' as bridge;
 import '../models/log_entry.dart';
 import '../models/run_controller.dart';
 import '../widgets/folder_field.dart';
@@ -15,17 +15,17 @@ class MatchFeatureScreen extends StatefulWidget {
   const MatchFeatureScreen({super.key});
 
   @override
-  State<MatchFeatureScreen> createState() => _CrossMatchScreenState();
+  State<MatchFeatureScreen> createState() => _MatchFeatureScreenState();
 }
 
-class _CrossMatchScreenState extends State<MatchFeatureScreen> {
+class _MatchFeatureScreenState extends State<MatchFeatureScreen> {
   final _refDir = TextEditingController();
   final _probeDir = TextEditingController();
   final _outputDir = TextEditingController();
   bool _recursive = true;
   bool _isQuantized = true;
   bool _verbose = true;
-  List<String> _featureExts = ['.bin'];
+  List<String> _featureExts = ['bin'];
 
   @override
   void dispose() {
@@ -52,7 +52,7 @@ class _CrossMatchScreenState extends State<MatchFeatureScreen> {
       'Params → recursive=$_recursive, quantized=$_isQuantized, '
       'exts=${_featureExts.join(", ")}',
     );
-    await run.run('Cross Match Feature', () async {
+    await run.run('Matching', () async {
       await bridge.matchFeature(
         refDir: _refDir.text,
         probeDir: _probeDir.text,

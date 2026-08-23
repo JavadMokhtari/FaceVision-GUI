@@ -2,24 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'app_shell.dart';
+import 'models/log_poller.dart';
 import 'models/run_controller.dart';
 import 'models/theme_controller.dart';
 import 'src/rust/frb_generated.dart';
 import 'theme/app_theme.dart';
 
-// import 'src/rust/api/run_dataset.dart' as bridge; // for createLogStream()
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await RustLib.init();
-
   final runController = RunController();
-
-  // Once you've added `create_log_stream` on the Rust side (see
-  // RUST_LOGGING.md), uncomment this to pipe every eprintln!-replacement
-  // line straight into the log console:
-  // bridge.createLogStream().listen(runController.logFromStream);
-
+  LogPoller(runController).start();
   runApp(FaceVisionApp(runController: runController));
 }
 

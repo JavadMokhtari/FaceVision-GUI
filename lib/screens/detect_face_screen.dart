@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../src/rust/api/run_dataset.dart' as bridge;
+import '../src/rust/api/ops.dart' as bridge;
 import '../models/log_entry.dart';
 import '../models/run_controller.dart';
 import '../widgets/folder_field.dart';
@@ -50,7 +50,7 @@ class _DetectFaceScreenState extends State<DetectFaceScreen> {
       'iou=${_iou.toStringAsFixed(2)}, recursive=$_recursive, saveFaces=$_saveFaces'
       '${_shard != null ? ', shard=${_shard!.$1}/${_shard!.$2}' : ''}',
     );
-    await run.run('Detect Face', () async {
+    await run.run('Detection', () async {
       await bridge.detectFace(
         srcDir: _srcDir.text,
         dstDir: _dstDir.text,

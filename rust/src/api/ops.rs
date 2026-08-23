@@ -1,5 +1,5 @@
 use facevision_parallel::{
-    detect_face_from_dataset, extract_feature_from_dataset, match_features_cross_datasets,
+    detect_face_from_dataset, extract_feature_from_dataset, match_feature_cross_datasets,
 };
 
 pub fn detect_face(
@@ -54,7 +54,7 @@ pub fn match_feature(
     verbose: bool,
 ) -> Result<(), String> {
     let feature_exts_slice: Vec<&str> = feature_exts.iter().map(|s| s.as_str()).collect();
-    match match_features_cross_datasets(
+    match match_feature_cross_datasets(
         &ref_dir,
         &probe_dir,
         &output_dir,

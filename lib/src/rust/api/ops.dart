@@ -16,7 +16,7 @@ Future<void> detectFace(
         (BigInt, BigInt)? shard,
         required bool saveFaces,
         required bool verbose}) =>
-    RustLib.instance.api.crateApiRunDatasetDetectFace(
+    RustLib.instance.api.crateApiOpsDetectFace(
         srcDir: srcDir,
         dstDir: dstDir,
         imgSize: imgSize,
@@ -35,7 +35,7 @@ Future<void> extractFeature(
         required bool quantized,
         (BigInt, BigInt)? shard,
         required bool verbose}) =>
-    RustLib.instance.api.crateApiRunDatasetExtractFeature(
+    RustLib.instance.api.crateApiOpsExtractFeature(
         srcDir: srcDir,
         dstDir: dstDir,
         modelName: modelName,
@@ -52,7 +52,7 @@ Future<void> matchFeature(
         required bool isQuantized,
         required List<String> featureExts,
         required bool verbose}) =>
-    RustLib.instance.api.crateApiRunDatasetMatchFeature(
+    RustLib.instance.api.crateApiOpsMatchFeature(
         refDir: refDir,
         probeDir: probeDir,
         outputDir: outputDir,

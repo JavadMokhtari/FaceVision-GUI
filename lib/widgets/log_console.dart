@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../models/log_entry.dart';
 import '../models/run_controller.dart';
 import '../theme/app_theme.dart';
+import 'task_progress_bar.dart';
 
 class LogConsole extends StatefulWidget {
   const LogConsole({super.key});
@@ -42,6 +43,7 @@ class _LogConsoleState extends State<LogConsole> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _Header(controller: controller),
+          TaskProgressBar(controller: controller),
           const Divider(height: 1),
           Expanded(
             child: controller.logs.isEmpty
@@ -80,14 +82,14 @@ class _Header extends StatelessWidget {
               children: [
                 const Text('Activity Log',
                     style:
-                        TextStyle(fontWeight: FontWeight.w700, fontSize: 14)),
+                        TextStyle(fontWeight: FontWeight.w700, fontSize: 14.5)),
                 AnimatedSwitcher(
                   duration: const Duration(milliseconds: 200),
                   child: Text(
-                    running ? 'Running: ${controller.currentTask}' : 'Idle',
+                    running ? 'Running: ${controller.currentTask}' : 'IDLE',
                     key: ValueKey(running ? controller.currentTask : 'idle'),
-                    style: TextStyle(
-                        fontSize: 11.5, color: context.cTextSecondary),
+                    style:
+                        TextStyle(fontSize: 12, color: context.cTextSecondary),
                   ),
                 ),
               ],
@@ -117,12 +119,12 @@ class _EmptyState extends StatelessWidget {
           Icon(Icons.terminal_rounded, size: 30, color: context.cTextSecondary),
           const SizedBox(height: 10),
           Text('No activity yet',
-              style: TextStyle(color: context.cTextSecondary, fontSize: 12.5)),
+              style: TextStyle(color: context.cTextSecondary, fontSize: 13)),
           const SizedBox(height: 2),
           Text('Run a task to see live logs here.',
               style: TextStyle(
                   color: context.cTextSecondary.withValues(alpha: 0.7),
-                  fontSize: 11.5)),
+                  fontSize: 12)),
         ],
       ),
     );
@@ -186,7 +188,7 @@ class _LogLine extends StatelessWidget {
               child: RichText(
                 text: TextSpan(
                   style: TextStyle(
-                      fontSize: 12.5,
+                      fontSize: 13,
                       height: 1.4,
                       color: context.cTextPrimary,
                       fontFamily: 'Consolas'),

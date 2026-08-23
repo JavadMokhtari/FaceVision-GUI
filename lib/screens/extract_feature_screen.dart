@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../src/rust/api/run_dataset.dart' as bridge;
+import '../src/rust/api/ops.dart' as bridge;
 import '../models/log_entry.dart';
 import '../models/run_controller.dart';
 import '../theme/app_theme.dart';
@@ -12,7 +12,7 @@ import '../widgets/section_card.dart';
 import '../widgets/shard_field.dart';
 import '../widgets/toggle_row.dart';
 
-const _modelOptions = ['facenet128', 'facenet512', 'sface'];
+const _modelOptions = ['Facenet128', 'Facenet512', 'SFace'];
 
 class ExtractFeatureScreen extends StatefulWidget {
   const ExtractFeatureScreen({super.key});
@@ -24,7 +24,7 @@ class ExtractFeatureScreen extends StatefulWidget {
 class _ExtractFeatureScreenState extends State<ExtractFeatureScreen> {
   final _srcDir = TextEditingController();
   final _dstDir = TextEditingController();
-  String _modelName = _modelOptions.first;
+  String _modelName = _modelOptions.first.toLowerCase();
   bool _recursive = true;
   bool _quantized = true;
   bool _verbose = true;
@@ -47,7 +47,7 @@ class _ExtractFeatureScreenState extends State<ExtractFeatureScreen> {
       'Params → model=$_modelName, recursive=$_recursive, quantized=$_quantized'
       '${_shard != null ? ', shard=${_shard!.$1}/${_shard!.$2}' : ''}',
     );
-    await run.run('Extract Feature', () async {
+    await run.run('Extraction', () async {
       await bridge.extractFeature(
         srcDir: _srcDir.text,
         dstDir: _dstDir.text,
@@ -95,8 +95,8 @@ class _ExtractFeatureScreenState extends State<ExtractFeatureScreen> {
                 for (final m in _modelOptions)
                   _ModelChip(
                     label: m,
-                    selected: m == _modelName,
-                    onTap: () => setState(() => _modelName = m),
+                    selected: m.toLowerCase() == _modelName,
+                    onTap: () => setState(() => _modelName = m.toLowerCase()),
                   ),
               ],
             ),
