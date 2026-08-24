@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../src/rust/api/ops.dart' as bridge;
 import '../models/log_entry.dart';
 import '../models/run_controller.dart';
+import '../theme/app_theme.dart';
 import '../widgets/folder_field.dart';
 import '../widgets/run_button.dart';
 import '../widgets/screen_scaffold.dart';
@@ -26,6 +27,10 @@ class _MatchFeatureScreenState extends State<MatchFeatureScreen> {
   bool _isQuantized = true;
   bool _verbose = true;
   List<String> _featureExts = ['bin'];
+
+  // Breakpoint below which the "Feature File Extensions" row collapses
+  // into a column instead of squeezing the TagInput horizontally.
+  static const double _narrowBreakpoint = 380;
 
   @override
   void dispose() {
@@ -65,6 +70,75 @@ class _MatchFeatureScreenState extends State<MatchFeatureScreen> {
     });
   }
 
+  Widget _buildExtensionsHeader() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Feature File Extensions',
+          style: TextStyle(
+            fontSize: 12.5,
+            fontWeight: FontWeight.w600,
+            color: context.cTextPrimary,
+          ),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          'Match features with different formats',
+          style: TextStyle(
+            fontSize: 11.5,
+            color: context.cTextSecondary,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildExtensionsRow() {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isNarrow = constraints.maxWidth < _narrowBreakpoint;
+
+        final tagInput = TagInput(
+          initialTags: _featureExts,
+          onChanged: (tags) => setState(() => _featureExts = tags),
+        );
+
+        if (isNarrow) {
+          // Stack vertically on small widths so the tag input gets
+          // full room instead of being squeezed against the label.
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildExtensionsHeader(),
+              const SizedBox(height: 10),
+              SizedBox(width: double.infinity, child: tagInput),
+            ],
+          );
+        }
+
+        // Wide layout: label on the left, tag input on the right.
+        // Top-aligned rather than centered, so the label stays pinned
+        // to the top of the row instead of drifting toward the middle
+        // as the tag input grows taller (chips wrapping to more lines).
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(child: _buildExtensionsHeader()),
+            const SizedBox(width: 12),
+            Flexible(
+              flex: 1,
+              child: Align(
+                alignment: Alignment.topRight,
+                child: tagInput,
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final run = context.watch<RunController>();
@@ -79,20 +153,10 @@ class _MatchFeatureScreenState extends State<MatchFeatureScreen> {
           icon: Icons.folder_open_rounded,
           children: [
             FolderField(label: 'Reference folder', controller: _refDir),
+            const SizedBox(height: 12),
             FolderField(label: 'Probe folder', controller: _probeDir),
+            const SizedBox(height: 12),
             FolderField(label: 'Output folder', controller: _outputDir),
-          ],
-        ),
-        const SizedBox(height: 16),
-        SectionCard(
-          title: 'FEATURE FILES',
-          icon: Icons.data_object_rounded,
-          children: [
-            TagInput(
-              label: 'Feature file extensions',
-              initialTags: _featureExts,
-              onChanged: (tags) => _featureExts = tags,
-            ),
           ],
         ),
         const SizedBox(height: 16),
@@ -100,6 +164,7 @@ class _MatchFeatureScreenState extends State<MatchFeatureScreen> {
           title: 'OPTIONS',
           icon: Icons.settings_suggest_rounded,
           children: [
+            _buildExtensionsRow(),
             ToggleRow(
               label: 'Recursive',
               subtitle: 'Include subfolders',
@@ -119,11 +184,15 @@ class _MatchFeatureScreenState extends State<MatchFeatureScreen> {
           ],
         ),
         const SizedBox(height: 24),
-        RunButton(
-          label: 'Run Matcher',
-          loading: run.isRunning,
-          onPressed: () => _run(run),
+        Align(
+          alignment: Alignment.centerRight,
+          child: RunButton(
+            label: 'Run Matcher',
+            loading: run.isRunning,
+            onPressed: () => _run(run),
+          ),
         ),
+        const SizedBox(height: 16),
       ],
     );
   }

@@ -12,8 +12,6 @@ import '../widgets/section_card.dart';
 import '../widgets/shard_field.dart';
 import '../widgets/toggle_row.dart';
 
-const _modelOptions = ['Facenet128', 'Facenet512', 'SFace'];
-
 class ExtractFeatureScreen extends StatefulWidget {
   const ExtractFeatureScreen({super.key});
 
@@ -24,7 +22,7 @@ class ExtractFeatureScreen extends StatefulWidget {
 class _ExtractFeatureScreenState extends State<ExtractFeatureScreen> {
   final _srcDir = TextEditingController();
   final _dstDir = TextEditingController();
-  String _modelName = _modelOptions.first.toLowerCase();
+  int _embeddingLen = 128;
   bool _recursive = true;
   bool _quantized = true;
   bool _verbose = true;
@@ -44,14 +42,14 @@ class _ExtractFeatureScreenState extends State<ExtractFeatureScreen> {
       return;
     }
     run.log(
-      'Params → model=$_modelName, recursive=$_recursive, quantized=$_quantized'
+      'Params → embeddingLen=$_embeddingLen, recursive=$_recursive, quantized=$_quantized'
       '${_shard != null ? ', shard=${_shard!.$1}/${_shard!.$2}' : ''}',
     );
     await run.run('Extraction', () async {
       await bridge.extractFeature(
         srcDir: _srcDir.text,
         dstDir: _dstDir.text,
-        modelName: _modelName,
+        embeddingLen: _embeddingLen,
         recursive: _recursive,
         quantized: _quantized,
         shard: _shard,
@@ -79,34 +77,76 @@ class _ExtractFeatureScreenState extends State<ExtractFeatureScreen> {
         ),
         const SizedBox(height: 16),
         SectionCard(
-          title: 'MODEL',
-          icon: Icons.model_training_rounded,
-          children: [
-            Text('Model name',
-                style: TextStyle(
-                    fontSize: 12.5,
-                    fontWeight: FontWeight.w600,
-                    color: context.cTextPrimary)),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                for (final m in _modelOptions)
-                  _ModelChip(
-                    label: m,
-                    selected: m.toLowerCase() == _modelName,
-                    onTap: () => setState(() => _modelName = m.toLowerCase()),
-                  ),
-              ],
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        SectionCard(
           title: 'OPTIONS',
           icon: Icons.settings_suggest_rounded,
           children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Embedding Length',
+                        style: TextStyle(
+                          fontSize: 12.5,
+                          fontWeight: FontWeight.w600,
+                          color: context.cTextPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        'Dimension of the face embedding vector',
+                        style: TextStyle(
+                          fontSize: 11.5,
+                          color: context.cTextSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  width: 170,
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  decoration: BoxDecoration(
+                    color: context.cSurface,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: context.cBorder),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<int>(
+                      value: _embeddingLen,
+                      isExpanded: true,
+                      dropdownColor: context.cSurface,
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                        color: context.cTextPrimary,
+                      ),
+                      items: const [
+                        DropdownMenuItem(
+                          value: 128,
+                          child: Center(
+                            child: Text('128  (Faster)'),
+                          ),
+                        ),
+                        DropdownMenuItem(
+                          value: 512,
+                          child: Center(
+                            child: Text('512  (More Accurate)'),
+                          ),
+                        ),
+                      ],
+                      onChanged: (v) {
+                        if (v != null) setState(() => _embeddingLen = v);
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
             ToggleRow(
               label: 'Recursive',
               subtitle: 'Include subfolders',
@@ -129,46 +169,16 @@ class _ExtractFeatureScreenState extends State<ExtractFeatureScreen> {
           ],
         ),
         const SizedBox(height: 24),
-        RunButton(
-          label: 'Run Extraction',
-          loading: run.isRunning,
-          onPressed: () => _run(run),
-        ),
-      ],
-    );
-  }
-}
-
-class _ModelChip extends StatelessWidget {
-  const _ModelChip(
-      {required this.label, required this.selected, required this.onTap});
-  final String label;
-  final bool selected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
-        decoration: BoxDecoration(
-          gradient: selected ? AppTheme.accentGradient : null,
-          color: selected ? null : context.cSurface,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-              color: selected ? Colors.transparent : context.cBorder),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            color: selected ? Colors.white : context.cTextSecondary,
+        Align(
+          alignment: Alignment.centerRight,
+          child: RunButton(
+            label: 'Run Extraction',
+            loading: run.isRunning,
+            onPressed: () => _run(run),
           ),
         ),
-      ),
+        const SizedBox(height: 16),
+      ],
     );
   }
 }

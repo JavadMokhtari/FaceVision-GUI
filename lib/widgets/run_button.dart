@@ -52,7 +52,7 @@ class _RunButtonState extends State<RunButton> {
                   ? []
                   : [
                       BoxShadow(
-                        color: AppTheme.accentB.withValues(alpha: 0.35),
+                        color: AppTheme.accentB.withValues(alpha: 0.3),
                         blurRadius: 18,
                         offset: const Offset(0, 6),
                       ),
@@ -78,7 +78,7 @@ class _RunButtonState extends State<RunButton> {
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w700,
-                    fontSize: 13.5,
+                    fontSize: 14,
                   ),
                 ),
               ],

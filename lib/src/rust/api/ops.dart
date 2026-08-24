@@ -30,7 +30,7 @@ Future<void> detectFace(
 Future<void> extractFeature(
         {required String srcDir,
         required String dstDir,
-        required String modelName,
+        required int embeddingLen,
         required bool recursive,
         required bool quantized,
         (BigInt, BigInt)? shard,
@@ -38,7 +38,7 @@ Future<void> extractFeature(
     RustLib.instance.api.crateApiOpsExtractFeature(
         srcDir: srcDir,
         dstDir: dstDir,
-        modelName: modelName,
+        embeddingLen: embeddingLen,
         recursive: recursive,
         quantized: quantized,
         shard: shard,

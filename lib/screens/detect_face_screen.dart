@@ -136,11 +136,15 @@ class _DetectFaceScreenState extends State<DetectFaceScreen> {
           ],
         ),
         const SizedBox(height: 24),
-        RunButton(
-          label: 'Run Detection',
-          loading: run.isRunning,
-          onPressed: () => _run(run),
+        Align(
+          alignment: Alignment.centerRight,
+          child: RunButton(
+            label: 'Run Detection',
+            loading: run.isRunning,
+            onPressed: () => _run(run),
+          ),
         ),
+        const SizedBox(height: 16),
       ],
     );
   }

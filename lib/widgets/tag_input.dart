@@ -9,13 +9,16 @@ import '../theme/app_theme.dart';
 class TagInput extends StatefulWidget {
   const TagInput({
     super.key,
-    required this.label,
+    this.label,
     required this.initialTags,
     required this.onChanged,
     this.hint = 'Type an extension and press Enter',
   });
 
-  final String label;
+  /// Optional label shown above the field. When null (or empty), no
+  /// label is rendered and no extra vertical space is reserved for
+  /// it, so the field itself doesn't shift down.
+  final String? label;
   final List<String> initialTags;
   final String hint;
   final ValueChanged<List<String>> onChanged;
@@ -51,17 +54,21 @@ class _TagInputState extends State<TagInput> {
 
   @override
   Widget build(BuildContext context) {
+    final hasLabel = widget.label != null && widget.label!.isNotEmpty;
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(widget.label,
-              style: TextStyle(
-                  fontSize: 12.5,
-                  fontWeight: FontWeight.w600,
-                  color: context.cTextPrimary)),
-          const SizedBox(height: 6),
+          if (hasLabel) ...[
+            Text(widget.label!,
+                style: TextStyle(
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.w600,
+                    color: context.cTextPrimary)),
+            const SizedBox(height: 6),
+          ],
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             decoration: BoxDecoration(

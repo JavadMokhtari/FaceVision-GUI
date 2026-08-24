@@ -97,7 +97,7 @@ abstract class RustLibApi extends BaseApi {
   Future<void> crateApiOpsExtractFeature(
       {required String srcDir,
       required String dstDir,
-      required String modelName,
+      required int embeddingLen,
       required bool recursive,
       required bool quantized,
       (BigInt, BigInt)? shard,
@@ -210,7 +210,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   Future<void> crateApiOpsExtractFeature(
       {required String srcDir,
       required String dstDir,
-      required String modelName,
+      required int embeddingLen,
       required bool recursive,
       required bool quantized,
       (BigInt, BigInt)? shard,
@@ -220,7 +220,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(srcDir, serializer);
         sse_encode_String(dstDir, serializer);
-        sse_encode_String(modelName, serializer);
+        sse_encode_u_32(embeddingLen, serializer);
         sse_encode_bool(recursive, serializer);
         sse_encode_bool(quantized, serializer);
         sse_encode_opt_box_autoadd_record_usize_usize(shard, serializer);
@@ -236,7 +236,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       argValues: [
         srcDir,
         dstDir,
-        modelName,
+        embeddingLen,
         recursive,
         quantized,
         shard,
@@ -251,7 +251,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         argNames: [
           "srcDir",
           "dstDir",
-          "modelName",
+          "embeddingLen",
           "recursive",
           "quantized",
           "shard",
