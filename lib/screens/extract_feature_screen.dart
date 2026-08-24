@@ -128,13 +128,13 @@ class _ExtractFeatureScreenState extends State<ExtractFeatureScreen> {
                         DropdownMenuItem(
                           value: 128,
                           child: Center(
-                            child: Text('128  (Faster)'),
+                            child: Text('128  ( Compact )'),
                           ),
                         ),
                         DropdownMenuItem(
                           value: 512,
                           child: Center(
-                            child: Text('512  (More Accurate)'),
+                            child: Text('512  ( More Accurate )'),
                           ),
                         ),
                       ],
