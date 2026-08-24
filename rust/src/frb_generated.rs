@@ -153,7 +153,7 @@ fn wire__crate__api__ops__extract_feature_impl(
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_src_dir = <String>::sse_decode(&mut deserializer);
             let api_dst_dir = <String>::sse_decode(&mut deserializer);
-            let api_model_name = <String>::sse_decode(&mut deserializer);
+            let api_embedding_len = <u32>::sse_decode(&mut deserializer);
             let api_recursive = <bool>::sse_decode(&mut deserializer);
             let api_quantized = <bool>::sse_decode(&mut deserializer);
             let api_shard = <Option<(usize, usize)>>::sse_decode(&mut deserializer);
@@ -164,7 +164,7 @@ fn wire__crate__api__ops__extract_feature_impl(
                     let output_ok = crate::api::ops::extract_feature(
                         api_src_dir,
                         api_dst_dir,
-                        api_model_name,
+                        api_embedding_len,
                         api_recursive,
                         api_quantized,
                         api_shard,

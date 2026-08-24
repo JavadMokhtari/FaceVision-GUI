@@ -24,7 +24,7 @@ pub fn detect_face(
 pub fn extract_feature(
     src_dir: String,
     dst_dir: String,
-    model_name: String,
+    embedding_len: u32,
     recursive: bool,
     quantized: bool,
     shard: Option<(usize, usize)>,
@@ -33,7 +33,7 @@ pub fn extract_feature(
     match extract_feature_from_dataset(
         &src_dir,
         &dst_dir,
-        &model_name,
+        embedding_len,
         recursive,
         quantized,
         shard,
