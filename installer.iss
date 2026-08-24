@@ -13,7 +13,7 @@ DefaultDirName={autopf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 
 OutputDir=installer
-OutputBaseFilename=FaceVision-Setup
+OutputBaseFilename=facevision-dataset-studio-setup-v{#MyAppVersion}-x64
 
 Compression=lzma
 SolidCompression=yes
