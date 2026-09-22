@@ -30,6 +30,9 @@ The application also includes:
 * **Light and Dark Mode** — Use the appearance button in the top-right corner to switch between light and dark mode.
 * **About** — Inforamtion about the application.
 
+![screenshot1](assets/screenshot-1.png)
+![screenshot2](assets/screenshot-2.png)
+
 ### Detect Face
 
 Use **Detect Face** to find faces in a folder of images. A higher confidence setting makes detection more selective, while a lower setting may detect more possible faces.
