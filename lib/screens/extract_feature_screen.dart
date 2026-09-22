@@ -107,7 +107,7 @@ class _ExtractFeatureScreenState extends State<ExtractFeatureScreen> {
                   ),
                 ),
                 Container(
-                  width: 170,
+                  width: 180,
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   decoration: BoxDecoration(
                     color: context.cSurface,
