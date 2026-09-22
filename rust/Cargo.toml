@@ -7,8 +7,8 @@ edition = "2024"
 crate-type = ["cdylib", "staticlib"]
 
 [dependencies]
-facevision-parallel = { path = "../../facevision-workspace/crates/facevision-parallel" }
-flutter_rust_bridge = "=2.12.0"
+facevision-parallel = { git = "https://github.com/JavadMokhtari/FaceVision.git", tag = "v0.2.4" }
+flutter_rust_bridge = "=2.13.0"
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }
