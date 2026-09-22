@@ -1,6 +1,3 @@
-import 'dart:math' as math;
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 
 /// Central place for the app's visual identity. Provides both a dark and a
@@ -152,9 +149,12 @@ class AppTheme {
     );
   }
 
-  /// Frosted-glass panel fill/border/shadow. Pair with a `BackdropFilter`
-  /// (see [GlassPanel]) — this alone supplies only the translucent fill,
-  /// not the blur itself.
+  /// Frosted-glass-*look* panel fill/border/shadow — translucent color,
+  /// soft border, drop shadow. No blur: [GlassPanel] just paints this
+  /// directly (alpha-blended against whatever's beneath), which is a
+  /// normal cheap paint op — unlike an actual `BackdropFilter` blur,
+  /// which resamples the framebuffer and is what used to make this app
+  /// GPU-heavy.
   static BoxDecoration glassDecoration(
     BuildContext context, {
     double radius = 18,
@@ -196,31 +196,17 @@ extension AppColors on BuildContext {
       _scheme.onSurface.withValues(alpha: _dark ? 0.62 : 0.58);
 }
 
-/// Soft, slowly-drifting blurred color blobs behind screen content, for a
-/// glass-morphism "aurora" feel. Three circles orbit off one
-/// [AnimationController] and get blurred with a backdrop filter — cheap
-/// enough to run continuously behind the whole app.
-class AuroraBackground extends StatefulWidget {
+/// A static, lightweight backdrop: a couple of large soft-edged color
+/// blobs (rendered as radial gradients, not a blurred backdrop) sitting
+/// behind screen content. Deliberately NOT animated and does NOT use
+/// `BackdropFilter` — that combination (continuous animation driving a
+/// full-screen backdrop blur, every frame, forever) was the single
+/// biggest GPU cost in the app. A gradient fill is a normal, cheap paint
+/// operation; it costs about the same as any other static background.
+class AuroraBackground extends StatelessWidget {
   const AuroraBackground({super.key, this.child});
 
   final Widget? child;
-
-  @override
-  State<AuroraBackground> createState() => _AuroraBackgroundState();
-}
-
-class _AuroraBackgroundState extends State<AuroraBackground>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _c = AnimationController(
-    vsync: this,
-    duration: const Duration(seconds: 20),
-  )..repeat();
-
-  @override
-  void dispose() {
-    _c.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -229,70 +215,57 @@ class _AuroraBackgroundState extends State<AuroraBackground>
       fit: StackFit.expand,
       children: [
         Container(color: dark ? AppTheme.bgDark : AppTheme.bgLight),
-        AnimatedBuilder(
-          animation: _c,
-          builder: (context, _) {
-            final t = _c.value * 2 * math.pi;
-            return Stack(
-              children: [
-                _Blob(
-                  color: AppTheme.accentA,
-                  alignment:
-                      Alignment(0.7 * math.cos(t), -0.6 + 0.3 * math.sin(t)),
-                  size: 420,
-                  opacity: dark ? 0.22 : 0.16,
-                ),
-                _Blob(
-                  color: AppTheme.accentB,
-                  alignment: Alignment(
-                      -0.8 + 0.3 * math.sin(t), 0.7 * math.cos(t * 0.8)),
-                  size: 380,
-                  opacity: dark ? 0.18 : 0.14,
-                ),
-                _Blob(
-                  color: AppTheme.success,
-                  alignment: Alignment(
-                      0.2 * math.sin(t * 1.3), 0.8 * math.cos(t * 1.1)),
-                  size: 300,
-                  opacity: dark ? 0.10 : 0.08,
-                ),
-              ],
-            );
-          },
+        Positioned(
+          top: -160,
+          right: -120,
+          child: _SoftBlob(
+            color: AppTheme.accentA,
+            size: 460,
+            opacity: dark ? 0.16 : 0.12,
+          ),
         ),
-        BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 80, sigmaY: 80),
-          child: Container(color: Colors.transparent),
+        Positioned(
+          bottom: -180,
+          left: -140,
+          child: _SoftBlob(
+            color: AppTheme.accentB,
+            size: 420,
+            opacity: dark ? 0.13 : 0.10,
+          ),
         ),
-        if (widget.child != null) widget.child!,
+        if (child != null) child!,
       ],
     );
   }
 }
 
-class _Blob extends StatelessWidget {
-  const _Blob({
+/// A circle with a soft radial falloff, done with a gradient (cheap
+/// GPU-wise) instead of a solid shape plus a separate blur pass.
+class _SoftBlob extends StatelessWidget {
+  const _SoftBlob({
     required this.color,
-    required this.alignment,
     required this.size,
     required this.opacity,
   });
 
   final Color color;
-  final Alignment alignment;
   final double size;
   final double opacity;
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: alignment,
+    return IgnorePointer(
       child: Container(
         width: size,
         height: size,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: color.withValues(alpha: opacity),
+          gradient: RadialGradient(
+            colors: [
+              color.withValues(alpha: opacity),
+              color.withValues(alpha: 0),
+            ],
+          ),
         ),
       ),
     );

@@ -222,7 +222,25 @@ class _PulsingDotState extends State<_PulsingDot>
   late final AnimationController _c = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 900),
-  )..repeat(reverse: true);
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.active) _c.repeat(reverse: true);
+  }
+
+  @override
+  void didUpdateWidget(_PulsingDot old) {
+    super.didUpdateWidget(old);
+    // Only tick the controller while actually visible/animating — no
+    // point spending CPU on an animation nobody sees.
+    if (widget.active && !old.active) {
+      _c.repeat(reverse: true);
+    } else if (!widget.active && old.active) {
+      _c.stop();
+    }
+  }
 
   @override
   void dispose() {
@@ -235,9 +253,13 @@ class _PulsingDotState extends State<_PulsingDot>
     if (!widget.active) {
       return Icon(Icons.circle, size: 10, color: context.cTextSecondary);
     }
-    return FadeTransition(
-      opacity: Tween(begin: 0.35, end: 1.0).animate(_c),
-      child: const Icon(Icons.circle, size: 10, color: AppTheme.success),
+    // RepaintBoundary keeps this small continuous animation from forcing
+    // a repaint of the header/list around it every frame.
+    return RepaintBoundary(
+      child: FadeTransition(
+        opacity: Tween(begin: 0.35, end: 1.0).animate(_c),
+        child: const Icon(Icons.circle, size: 10, color: AppTheme.success),
+      ),
     );
   }
 }
