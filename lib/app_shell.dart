@@ -202,12 +202,14 @@ class _TopBar extends StatelessWidget {
               const SizedBox(height: 5),
               const Text('Version: ${AppInfo.version}'),
               const SizedBox(height: 15),
-              const Text('Developed by Javad Mokhtari'),
+              const Text(
+                'Developed by ${AppInfo.publisher}',
+              ),
               const SizedBox(height: 5),
               const Text('Contact: javad.mktri@gmail.com'),
               const SizedBox(height: 15),
               Text(
-                '\u00A9 ${DateTime.now().year} Javad Mokhtari. All rights reserved.',
+                '\u00A9 ${DateTime.now().year} ${AppInfo.publisher}. All rights reserved.',
                 style: TextStyle(
                   fontSize: 12,
                   color: scheme.onSurfaceVariant,
