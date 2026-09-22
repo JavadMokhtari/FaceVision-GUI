@@ -27,7 +27,6 @@ const _digitKeys = <LogicalKeyboardKey>[
   LogicalKeyboardKey.digit1,
   LogicalKeyboardKey.digit2,
   LogicalKeyboardKey.digit3,
-  LogicalKeyboardKey.digit4,
 ];
 
 class AppShell extends StatefulWidget {
@@ -165,6 +164,68 @@ class _TopBar extends StatelessWidget {
   final bool consoleVisible;
   final VoidCallback onToggleConsole;
 
+  void _showAboutDialog(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 28,
+                height: 28,
+                decoration: const BoxDecoration(
+                  gradient: AppTheme.accentGradient,
+                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                ),
+                child: const Icon(Icons.face_retouching_natural,
+                    size: 15, color: Colors.white),
+              ),
+              const SizedBox(width: 10),
+              const Text('About'),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "${AppInfo.name}  ${AppInfo.subtitle}",
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 5),
+              const Text('Version: ${AppInfo.version}'),
+              const SizedBox(height: 15),
+              const Text('Developed by Javad Mokhtari'),
+              const SizedBox(height: 5),
+              const Text('Contact: javad.mktri@gmail.com'),
+              const SizedBox(height: 15),
+              Text(
+                '\u00A9 ${DateTime.now().year} Javad Mokhtari. All rights reserved.',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: scheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
@@ -240,7 +301,7 @@ class _TopBar extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(right: 10),
+            padding: const EdgeInsets.only(right: 4),
             child: IconButton(
               onPressed: onToggleConsole,
               tooltip: consoleVisible
@@ -252,6 +313,14 @@ class _TopBar extends StatelessWidget {
                     : Icons.crop_square_rounded,
                 size: 20,
               ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: IconButton(
+              onPressed: () => _showAboutDialog(context),
+              tooltip: 'About',
+              icon: const Icon(Icons.info_outline_rounded, size: 20),
             ),
           ),
         ],
@@ -297,24 +366,24 @@ class _Brand extends StatelessWidget {
                       color: context.cTextPrimary,
                     ),
                   ),
-                  const SizedBox(width: 6),
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
-                    decoration: BoxDecoration(
-                      color: AppTheme.accentB.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: const Text(
-                      'v${AppInfo.version}',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 0.25,
-                        color: AppTheme.accentB,
-                      ),
-                    ),
-                  ),
+                  // const SizedBox(width: 6),
+                  // Container(
+                  //   padding:
+                  //       const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                  //   decoration: BoxDecoration(
+                  //     color: AppTheme.accentB.withValues(alpha: 0.15),
+                  //     borderRadius: BorderRadius.circular(6),
+                  //   ),
+                  //   child: const Text(
+                  //     'v${AppInfo.version}',
+                  //     style: TextStyle(
+                  //       fontSize: 12,
+                  //       fontWeight: FontWeight.w700,
+                  //       letterSpacing: 0.25,
+                  //       color: AppTheme.accentB,
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
               Text(
